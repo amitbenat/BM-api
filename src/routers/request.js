@@ -49,7 +49,7 @@ router.get('/requests/:id', auth, async (req, res)=>{
 
 
 
-router.patch('/requests/:id', auth, async (req, res) => {
+router.patch('/request/:id', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowed = ['status','valid']
     const validUpdate = updates.every( update => allowed.includes(update))
