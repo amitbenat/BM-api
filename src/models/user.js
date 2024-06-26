@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         lowercase: true,
-        validate(val){
-            if(!validator.isEmail(val)){
+        validate(email){
+            if(!validator.isEmail(email)){
                 throw new Error('email not valid')
             }
         }
@@ -26,12 +26,17 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 7,
         trim: true,
-    }, tokens:[{
+    }, 
+    tokens:[{
         token:{
             type: String,
             required: true
         }
-    }]
+    }],
+    isAdmin:{
+        type: Boolean,
+        default: false
+    }
 }, {timestamps: true})
 
 

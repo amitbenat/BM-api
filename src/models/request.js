@@ -1,30 +1,35 @@
 const mongoose = require('mongoose')
 
-
+const statusStates = [ 'sent', 'in progress...', 'closed']
+const typeStates = ['השחרה', 'כניסה-רגלי', 'כניסה-רכוב', 'קידוד חוגר', 'שו"ס',  ]
 
 const requestSchema = new mongoose.Schema({
-    des: {
+    description: {
         type: String,
         trim: true,
-        required: true
+        // required: true
     },
     status: {
         type: String,
-        trim: true,
-        required: true
+        enum: statusStates,
+        // required: true
     },
-    valid:{
+    isValid:{
         type: Boolean,
-        required: true,
+        // required: true,
         default: false
     },
     type: {
         type: String,
-        required: true
+        enum: typeStates,
+        // required: true
+    },
+    reasonIfNeeded:{
+        type: String
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: 'User'
     }
 }, {timestamps: true})

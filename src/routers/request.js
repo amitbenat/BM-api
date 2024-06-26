@@ -82,7 +82,7 @@ router.delete('/request/:id', auth,async (req, res) => {
 
         res.send(request)
     } catch(e){
-        res.status(500).send()
+        res.status(500).send(e)
     }
 })
 
