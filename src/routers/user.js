@@ -17,10 +17,10 @@ router.post('/users', async (req, res) => {
             return res.status(201).send({user,token})
 
         }
-        res.status(400).send({ error: 'email exist in database!'})
+        res.status(400).send('!אימייל קיים במערכת')
 
     } catch(e){
-        res.status(400).send(e)
+        res.status(400).send(".הרשמות נכשלה. בדוק את תקינות הערכים")
 
     }
 })
@@ -33,7 +33,7 @@ router.post('/users/login', async (req, res)=>{
         const token = await user.generateToken()
         res.send({user,token})
     } catch(e){[
-        res.status(400).send()
+        res.status(400).send(".התחברות נכשלה. נסה להשתמש באימייל או סיסמה אחרים")
     ]}
 })
 
