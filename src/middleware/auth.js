@@ -14,14 +14,16 @@ const auth = async (req, res, next) => {
       throw new Error();
     }
 
-    req.token = token;
-    req.user = user;
-    next();
-  } catch (e) {
-    {
-      res.status(401).send({ error: e });
-    }
-  }
-};
+        if(!user){
+            throw new Error("can't find user!")
+        }
 
-module.exports = auth;
+        req.token = token
+        req.user = user
+        next()
+    } catch (e){{
+        res.status(401).send({error: 'authentication failed!'})
+    }}
+}
+
+module.exports = auth

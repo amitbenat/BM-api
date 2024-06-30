@@ -79,4 +79,23 @@ router.delete('/request/:id', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+
+router.delete('/request/:id', auth,async (req, res) => {
+    try {
+        const request = await Request.findOneAndDelete({_id: req.params.id, owner: req.user._id})
+
+        if(!request){
+            return res.status(404).send()
+        }
+
+        res.send(request)
+    } catch(e){
+        res.status(500).send(e)
+    }
+})
+
+
+
+
+
+module.exports = router
