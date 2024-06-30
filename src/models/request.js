@@ -1,34 +1,35 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-
-
-const requestSchema = new mongoose.Schema({
+const requestSchema = new mongoose.Schema(
+  {
     des: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      trim: true,
+      required: true,
     },
     status: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      trim: true,
+      required: true,
     },
-    valid:{
-        type: Boolean,
-        required: true,
-        default: false
+    valid: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     type: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    }
-}, {timestamps: true})
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+);
 
-const Request = mongoose.model('request', requestSchema)
+const Request = mongoose.model('request', requestSchema);
 
-module.exports = Request
+module.exports = Request;
