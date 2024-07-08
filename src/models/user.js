@@ -12,34 +12,37 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     email: {
-        type: String,
-        required: true,
-        trim: true,
-        lowercase: true,
-        validate(email){
-            if(!validator.isEmail(email)){
-                throw new Error('email not valid')
-            }
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+      validate(email) {
+        if (!validator.isEmail(email)) {
+          throw new Error('email not valid');
         }
       },
-    password:{
-        type: String,
-        required: true,
-        minlength: 7,
-        trim: true,
-    }, 
-    tokens:[{
-        token:{
-            type: String,
-            required: true
-        }
-    }],
-    isAdmin:{
-        type: Boolean,
-        default: false
-    }
-}, {timestamps: true})
-
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 7,
+      trim: true,
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
 userSchema.virtual('myRequests', {
   ref: 'Request',
@@ -93,6 +96,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
