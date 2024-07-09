@@ -55,9 +55,9 @@ router.get('/requests/:id', auth, async (req, res) => {
   }
 });
 
-router.patch('/request/:id', auth, async (req, res) => {
+router.patch('/admin-open-requests/:id', admin, async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowed = ['status', 'valid'];
+  const allowed = ['status', 'isValid', 'reasonIfNeeded'];
   const validUpdate = updates.every((update) => allowed.includes(update));
 
   if (!validUpdate) {
@@ -66,10 +66,9 @@ router.patch('/request/:id', auth, async (req, res) => {
   try {
     const request = await Request.findOne({
       _id: req.params.id,
-      owner: req.user._id,
     });
     if (!request) {
-      return res.status(404).send();
+      return res.status(404).send('tcyun');
     }
     updates.forEach((update) => (request[update] = req.body[update]));
     await request.save();
@@ -78,6 +77,7 @@ router.patch('/request/:id', auth, async (req, res) => {
     res.status(400).send(e);
   }
 });
+
 
 router.delete('/request/:id', auth, async (req, res) => {
   try {
