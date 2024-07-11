@@ -13,20 +13,19 @@ const auth = async (req, res, next) => {
       _id: decoded._id,
       'tokens.token': token,
     });
+
     if (!user) {
-      throw new Error();
+      throw new Error("can't find user!");
     }
 
-        if(!user){
-            throw new Error("can't find user!")
-        }
+    req.token = token;
+    req.user = user;
+    next();
+  } catch (e) {
+    {
+      res.status(401).send(e + 'uniml,');
+    }
+  }
+};
 
-        req.token = token
-        req.user = user
-        next()
-    } catch (e){{
-        res.status(401).send(e+'uniml,')
-    }}
-}
-
-module.exports = auth
+module.exports = auth;
