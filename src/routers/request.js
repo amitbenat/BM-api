@@ -3,24 +3,45 @@ const router = new express.Router();
 const Request = require('../models/request');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const User = require('../models/user');
 
 router.get('/admin-open-requests', auth, admin, async (req, res) => {
-  try {
-    const requestType = req.query.requestType;
-    if (requestType === 'הכל') {
-      const requests = await Request.find({ status: 'pending' }).populate(
-        'owner'
-      );
-      res.status(200).send(requests);
-    } else {
-      const requests = await Request.find({
-        status: 'pending',
-        type: requestType,
-      }).populate('owner');
-      res.status(200).send(requests);
+  const requestType = req.query.requestType;
+  const email = req.query.email;
+  const filterByType = req.query.filterByType === 'true';
+  if (filterByType) {
+    try {
+      if (requestType === 'הכל') {
+        const requests = await Request.find({ status: 'pending' }).populate(
+          'owner'
+        );
+        res.status(200).send({requests, isEmailValid: true})
+      } else {
+        const requests = await Request.find({
+          status: 'pending',
+          type: requestType,
+        }).populate('owner');
+        res.status(200).send({requests, isEmailValid: true})
+      }
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching users', error: err });
     }
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching users', error: err });
+  } else {
+    try {
+      let requests
+      const myUser = await User.findOne({ email });
+      if (!myUser) {
+        requests = await Request.find({ status: 'pending' }).populate(
+         'owner'
+       );
+      return res.status(200).send({requests, isEmailValid: false});
+
+     }
+       requests = await Request.find({ owner: myUser._id }).populate('owner');
+      res.status(200).send({requests, isEmailValid: true});
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching users', error: err });
+    }
   }
 });
 
