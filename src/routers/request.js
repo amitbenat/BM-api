@@ -8,7 +8,7 @@ const User = require('../models/user');
 router.get('/admin-open-requests', auth, admin, async (req, res) => {
   const requestType = req.query.requestType;
   const email = req.query.email;
-  const filterByType = req.query.filterByType === 'true';
+  const filterByType = req.query.filterByType == true;
   if (filterByType) {
     try {
       if (requestType === 'הכל') {
@@ -30,7 +30,7 @@ router.get('/admin-open-requests', auth, admin, async (req, res) => {
     try {
       let requests
       const myUser = await User.findOne({ email });
-      if (!myUser) {
+      if (!myUser || myUser !== req.user) {
         requests = await Request.find({ status: 'pending' }).populate(
          'owner'
        );
@@ -46,16 +46,16 @@ router.get('/admin-open-requests', auth, admin, async (req, res) => {
 });
 
 router.get('/admin-history-requests', admin, async (req, res) => {
-  const { startdate, enddate, page } = req.query;
+  const { startDateVar, endDateVar, page } = req.query;
   const pageNumber = parseInt(page) || 1;
   const pageSize = 5;
-  let startDate = new Date(startdate);
-  let endDate = new Date(enddate);
+  let startDate = new Date(startDateVar);
+  let endDate = new Date(endDateVar);
   endDate.setDate(endDate.getDate() + 1);
 
   let query = {};
 
-  if (startdate && enddate) {
+  if (startDateVar && endDateVar) {
     query.createdAt = {
       $gte: new Date(startDate),
       $lte: new Date(endDate),
@@ -71,7 +71,6 @@ router.get('/admin-history-requests', admin, async (req, res) => {
 
       res.status(200).send({ requests, totalPages });
     } catch (error) {
-      console.error(error);
       res.status(500).send('Error fetching dzfg');
     }
   } else {
@@ -86,8 +85,7 @@ router.get('/admin-history-requests', admin, async (req, res) => {
 
       res.status(200).send({ requests, totalPages });
     } catch (error) {
-      console.error(error);
-      res.status(500).send('lkhljhlkh');
+      res.status(500).send(error);
     }
   }
 });
@@ -105,7 +103,7 @@ router.patch('/admin-open-requests/:id', admin, async (req, res) => {
       _id: req.params.id,
     });
     if (!request) {
-      return res.status(404).send('tcyun');
+      return res.status(404).send('שגיאה במציאת בקשה');
     }
     updates.forEach((update) => (request[update] = req.body[update]));
     await request.save();
@@ -116,6 +114,10 @@ router.patch('/admin-open-requests/:id', admin, async (req, res) => {
 });
 
 router.post('/requests', auth, async (req, res) => {
+  if(req.body.description.trim() === 0){
+    res.status(400).send('תיאור הגשת הבקשה הוא חובה');
+  }
+  console.log(req.body.description);
   const request = new Request({
     ...req.body,
     owner: req.user._id,
@@ -124,7 +126,7 @@ router.post('/requests', auth, async (req, res) => {
     await request.save();
     res.status(201).send(request);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send('בדוק שכל הערכים מולאו');
   }
 });
 

@@ -84,7 +84,6 @@ userSchema.statics.findByCred = async (email, password) => {
   return user;
 };
 
-//hash thhe ppain text before saving
 
 userSchema.pre('save', async function (next) {
   const user = this;
