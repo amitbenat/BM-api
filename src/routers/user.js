@@ -28,6 +28,9 @@ router.patch('/users/forgot-password', async (req, res) => {
 router.post('/users', async (req, res) => {
   const user = new User(req.body);
   try {
+    if (req.body.password.trim().length < 8){
+      res.status(400).send('סיסמה לא תקנית');
+    }
     const anotherUser = await User.findOne({ email: req.body.email });
     if (!anotherUser) {
       await user.save();
@@ -36,7 +39,7 @@ router.post('/users', async (req, res) => {
     }
     res.status(400).send('!אימייל קיים במערכת');
   } catch (e) {
-    res.status(400).send('.הרשמות נכשלה. בדוק את תקינות הערכים');
+    res.status(400).send('הרשמות נכשלה. בדוק את הערכים שהזנת');
   }
 });
 
@@ -46,7 +49,7 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateToken();
     res.send({ user, token });
   } catch (e) {
-    [res.status(400).send()];
+    res.status(400).send('שם משתמש או סיסמה שגויים');
   }
 });
 

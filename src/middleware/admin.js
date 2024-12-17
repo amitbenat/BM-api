@@ -32,10 +32,9 @@ const checkAdmin = async (req, res, next) => {
       return res.status(403).send('Access denied');
     }
 
-    req.user = user; // Attach the user to the request object for use in subsequent middleware/handlers
+    req.user = user; 
     next();
   } catch (error) {
-    console.error(error);
     res.status(500).send('Server error');
   }
 };
